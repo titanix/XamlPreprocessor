@@ -10,6 +10,8 @@ The project build an executable which can be used either:
 * in command line
 * as a MSBuild Task
 
+```
 The command line syntax is:
 XamlPreprocessor.exe <SYMBOL_LIST> <input_file.xml> <output_file.xml>
 SYMBOL_LIST is a list of comma separated symbols (eg. DEBUG;WINDOWS_PHONE)
+```
