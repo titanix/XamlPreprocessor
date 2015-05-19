@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamlPreprocessor", "XamlPreprocessor\XamlPreprocessor.csproj", "{417F7621-42CC-4E59-842A-80AB4540DC78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{4A815E44-31D7-47FD-8A62-45E44D765A73}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1D628A83-CB44-4ED8-91E0-EEBABF1932A1}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+		XamlPreprocessor.vsmdi = XamlPreprocessor.vsmdi
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Debug|x86.ActiveCfg = Debug|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Debug|x86.Build.0 = Debug|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Release|Any CPU.ActiveCfg = Release|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Release|Mixed Platforms.Build.0 = Release|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Release|x86.ActiveCfg = Release|x86
+		{417F7621-42CC-4E59-842A-80AB4540DC78}.Release|x86.Build.0 = Release|x86
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4A815E44-31D7-47FD-8A62-45E44D765A73}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = XamlPreprocessor.vsmdi
+	EndGlobalSection
+EndGlobal
