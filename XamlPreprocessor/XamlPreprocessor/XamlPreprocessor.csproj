@@ -63,8 +63,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Evaluator.cs" />
-    <Compile Include="MalFormedExpressionException.cs" />
+    <Compile Include="Directives\Directive.cs" />
+    <Compile Include="Directives\DirectiveAttrAdd.cs" />
+    <Compile Include="Directives\DirectiveAttrDel.cs" />
+    <Compile Include="Evaluator\AndExpression.cs" />
+    <Compile Include="Evaluator\Evaluator.cs" />
+    <Compile Include="Evaluator\Expression.cs" />
+    <Compile Include="Evaluator\NotExpression.cs" />
+    <Compile Include="Evaluator\NullExpression.cs" />
+    <Compile Include="Evaluator\OrExpression.cs" />
+    <Compile Include="Evaluator\ValueExpression.cs" />
+    <Compile Include="Evaluator\MalFormedExpressionException.cs" />
     <Compile Include="PathRename.cs" />
     <Compile Include="PreprocessDirectives.cs" />
     <Compile Include="PreprocessorTask.cs" />

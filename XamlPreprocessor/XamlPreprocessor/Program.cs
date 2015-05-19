@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using Saphir;
 using System.IO;
 using System.Xml;
+using XamlPreprocessor.Evaluator;
 
 namespace XamlPreprocessor
 {
@@ -125,8 +125,8 @@ namespace XamlPreprocessor
                         string commValue = (elem as XComment).Value;
                         commValue = Directives.ExtractDirectiveAttrAdd(commValue);
                         string ns = Directives.ExtractNamespace(commValue);
-                        string attrName = DirectiveATTR_ADD.ExtractAttributeName(commValue);
-                        string attrValue = DirectiveATTR_ADD.ExtractAttributeValue(commValue);
+                        string attrName = DirectiveAttrAdd.ExtractAttributeName(commValue);
+                        string attrValue = DirectiveAttrAdd.ExtractAttributeValue(commValue);
 
                         XNode xn = elem.NextNode;
                         while (xn.NodeType != XmlNodeType.Element)
@@ -154,7 +154,7 @@ namespace XamlPreprocessor
                     case CommentType.ATTR_DEL:
                         string comment = (elem as XComment).Value;
                         string directive = Directives.ExtractDirectiveAttrDel(comment);
-                        string name = DirectiveATTR_DEL.ExtractAttributeValue(directive);
+                        string name = DirectiveAttrDel.ExtractAttributeValue(directive);
                         ns = Directives.ExtractNamespace(directive);
 
                         xn = elem.NextNode;

@@ -14,154 +14,24 @@ using System.Collections.Generic;
 using System.Text;
 using XamlPreprocessor;
 
-namespace Saphir
+namespace XamlPreprocessor.Evaluator
 {
     /*
      * Attention ce code date d'il y au moins quatre ans. Il a été réalisé alors que j'étais à l'université
      * sur la base d'un TP calculatrice donné par le créateur du langage LISAAC selon une technique "performante" et
-     * récursive dont je ne me souvient plus des détails.
+     * récursive dont je ne me souviens plus des détails.
      * 
      * Ce parseur mériterai d'être réécrit proprement depuis le début.
      * 
      */
-    public abstract class Expression
-    {
-        public abstract bool Evaluate(string arg);
-        public abstract bool Evaluate(string[] args);
-    }
-
-    class NullExpression : Expression
-    {
-        public NullExpression() { }
-
-        public override bool Evaluate(string arg)
-        {
-            return false;
-        }
-
-        public override bool Evaluate(string[] args)
-        {
-            return false;
-        }
-
-        public override string ToString()
-        {
-            return String.Format("nil_exp");
-        }
-    }
-
-    class OR : Expression
-    {
-        Expression Expr0;
-        Expression Expr1;
-
-        public OR(Expression arg0, Expression arg1)
-        {
-            Expr0 = arg0;
-            Expr1 = arg1;
-        }
-
-        public override bool Evaluate(string arg)
-        {
-            return Expr0.Evaluate(arg) || Expr1.Evaluate(arg);
-        }
-
-        public override bool Evaluate(string[] args)
-        {
-            return Expr0.Evaluate(args) || Expr1.Evaluate(args);
-        }
-
-        public override string ToString()
-        {
-            return String.Format("(OR {0} {1})", Expr0.ToString(), Expr1.ToString());
-        }
-    }
-
-    class AND : Expression
-    {
-        Expression Expr0;
-        Expression Expr1;
-
-        public AND(Expression arg0, Expression arg1)
-        {
-            Expr0 = arg0;
-            Expr1 = arg1;
-        }
-
-        public override bool Evaluate(string arg)
-        {
-            return Expr0.Evaluate(arg) && Expr1.Evaluate(arg);
-        }
-
-        public override bool Evaluate(string[] args)
-        {
-            return Expr0.Evaluate(args) && Expr1.Evaluate(args);
-        }
-
-        public override string ToString()
-        {
-            return String.Format("(AND {0} {1})", Expr0.ToString(), Expr1.ToString());
-        }
-    }
-
-    class NOT : Expression
-    {
-        Expression Expr;
-
-        public NOT(Expression expr)
-        {
-            Expr = expr;
-        }
-
-        public override bool Evaluate(string arg)
-        {
-            return !Expr.Evaluate(arg);
-        }
-
-        public override bool Evaluate(string[] args)
-        {
-            return !Expr.Evaluate(args);
-        }
-
-        public override string ToString()
-        {
-            return String.Format("(NOT {0})", Expr.ToString());
-        }
-    }
-
-    class VALUE : Expression
-    {
-        string Value;
-
-        public VALUE(string value)
-        {
-            Value = value;
-        }
-
-        public override bool Evaluate(string arg)
-        {
-            return String.Compare(Value, arg, true) == 0;
-        }
-
-        public override bool Evaluate(string[] args)
-        {
-            bool Contains = false;
-            foreach (string str in args)
-            {
-                if (String.Compare(str, Value, true) == 0)
-                    Contains = true;
-            }
-            return Contains;
-        }
-
-        public override string ToString()
-        {
-            return Value;
-        }
-    }
-
     static class Evaluator
     {
+        /// <summary>
+        /// Renvoie une expression (booléenne) évaluable à partir d'une chaîne de caractère.
+        /// Lance une MalFormedExpressionException si la chaîne n'est pas conforme à la syntaxe attendue.
+        /// </summary>
+        /// <param name="ExprString">L'expression à parser.</param>
+        /// <returns>Une représentation évaluable sous forme d'objet de l'expression.</returns>
         public static Expression Parse(string ExprString)
         {
             int Cursor = -1;
@@ -217,7 +87,7 @@ namespace Saphir
                 Value += StrArg[Cursor];
                 Cursor++;
             }
-            return new VALUE(Value);
+            return new ValueExpression(Value);
         }
 
         private static string ReadNextString(string StrArg)
@@ -274,13 +144,13 @@ namespace Saphir
                (AND windows (OR c cpp))
             */
             // Test d'évaluation d'expression. Devrait imprimer True, True et False sur la console.
-            Expression exprtest = new OR(new VALUE("csharp"), new VALUE("nemerle"));
+            Expression exprtest = new OR(new ValueExpression("csharp"), new ValueExpression("nemerle"));
             Console.WriteLine(exprtest.Evaluate("csharp"));
             Console.WriteLine(exprtest.Evaluate("nemerle"));
             Console.WriteLine(exprtest.Evaluate("scheme"));
             Console.WriteLine();
             // Test d'évaluation d'une expression. Devrait imprimer False puis True sur la console.
-            exprtest = new AND(new VALUE("windows"), new OR(new VALUE("c"), new VALUE("cpp")));
+            exprtest = new AND(new ValueExpression("windows"), new OR(new ValueExpression("c"), new ValueExpression("cpp")));
             string[] tab = new string[3];
             tab[0] = "windows";
             Console.WriteLine(exprtest.Evaluate(tab));
@@ -288,7 +158,7 @@ namespace Saphir
             Console.WriteLine(exprtest.Evaluate(tab));
             Console.WriteLine();
             // Test d'évaluation d'une expression. Devrait imprimer False sur la console.
-            exprtest = new AND(new VALUE("windows"), new AND(new VALUE("c"), new NOT(new VALUE("cpp"))));
+            exprtest = new AND(new ValueExpression("windows"), new AND(new ValueExpression("c"), new NOT(new ValueExpression("cpp"))));
             tab[0] = "windows";
             tab[1] = "c";
             tab[1] = "cpp";
