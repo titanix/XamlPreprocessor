@@ -5,11 +5,11 @@ using System.Text;
 
 namespace XamlPreprocessor.Evaluator
 {
-    class NOT : Expression
+    class NotExpression : Expression
     {
         Expression Expr;
 
-        public NOT(Expression expr)
+        public NotExpression(Expression expr)
         {
             Expr = expr;
         }

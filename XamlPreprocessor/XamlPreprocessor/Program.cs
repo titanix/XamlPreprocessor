@@ -16,9 +16,11 @@ namespace XamlPreprocessor
     partial class Preprocessor
     {
         /// <summary>
-        /// Listes des symboles de compilation que le préprocesseur doit prendre en compte.
+        /// Liste des symboles de compilation que le préprocesseur doit prendre en compte.
         /// </summary>
         public string[] Symbols;
+
+        Dictionary<string, XNamespace> Namespaces = new Dictionary<string, XNamespace>();
 
         static void Main(string[] args)
         {
@@ -59,13 +61,11 @@ namespace XamlPreprocessor
                 WriteFile(xdoc, outpath);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
         }
-
-        Dictionary<string, XNamespace> Namespaces = new Dictionary<string, XNamespace>();
 
         public void ParseNamespaceDeclarations(XDocument xamlFile)
         {
@@ -84,7 +84,7 @@ namespace XamlPreprocessor
         }
 
         /// <summary>
-        /// Lit chaque noeuds XML d'un fichier xml. A chaque commentaire rencontré, 
+        /// Lit chaque noeuds XML d'un fichier xml.  chaque commentaire rencontré, 
         /// si le commentaire est une évaluation évaluée à vrai, le noeud suivant est conservé dans l'arbre,
         /// sinon il est retiré.
         /// </summary>
@@ -93,42 +93,42 @@ namespace XamlPreprocessor
         private XDocument Preprocess(XDocument xamlFile)
         {
             string processMessage = "expression '{0}' evaluated at '{1}'";
-            foreach (XNode elem in xamlFile.Root.DescendantNodes())
+            foreach (XNode node in xamlFile.Root.DescendantNodes())
             {
-                CommentType cType = GetNodeType(elem);
+                CommentType commentType = GetNodeType(node);
                 Expression exp = new NullExpression();
-                switch (cType)
+                switch (commentType)
                 {
                     case CommentType.IGNORE:
                         break;
                     case CommentType.IF:
-                        exp = Directives.ExtractExpressionIF((elem as XComment).Value);
+                        exp = Directives.ExtractExpressionIF((node as XComment).Value);
                         bool eval = exp.Evaluate(Symbols);
                         if (!eval)
                         {
                             // Note : il semblerait qu'AfterSelf() ignore de toute façon les noeuds commentaires  
-                            elem.ElementsAfterSelf().Where(e => e.NodeType != XmlNodeType.Comment).First().Remove();
+                            node.ElementsAfterSelf().Where(e => e.NodeType != XmlNodeType.Comment).First().Remove();
                         }
-                        (elem as XComment).Value = String.Format(processMessage, (elem as XComment).Value.Trim(), eval);
+                        (node as XComment).Value = String.Format(processMessage, (node as XComment).Value.Trim(), eval);
                         break;
                     case CommentType.LIF:
-                        exp = Directives.ExtractExpressionLIF((elem as XComment).Value);
+                        exp = Directives.ExtractExpressionLIF((node as XComment).Value);
                         bool eval2 = exp.Evaluate(Symbols);
                         if (!eval2)
                         {
-                            elem.NextNode.Remove();
-                            elem.AddAfterSelf(new XComment(String.Format("deleted node was here")));
+                            node.NextNode.Remove();
+                            node.AddAfterSelf(new XComment(String.Format("deleted node was here")));
                         }
-                        (elem as XComment).Value = String.Format(processMessage, (elem as XComment).Value.Trim(), eval2);
+                        (node as XComment).Value = String.Format(processMessage, (node as XComment).Value.Trim(), eval2);
                         break;
                     case CommentType.ATTR_ADD:
-                        string commValue = (elem as XComment).Value;
+                        string commValue = (node as XComment).Value;
                         commValue = Directives.ExtractDirectiveAttrAdd(commValue);
                         string ns = Directives.ExtractNamespace(commValue);
                         string attrName = DirectiveAttrAdd.ExtractAttributeName(commValue);
                         string attrValue = DirectiveAttrAdd.ExtractAttributeValue(commValue);
 
-                        XNode xn = elem.NextNode;
+                        XNode xn = node.NextNode;
                         while (xn.NodeType != XmlNodeType.Element)
                         {
                             xn = xn.NextNode;
@@ -147,17 +147,17 @@ namespace XamlPreprocessor
                                 Namespaces.TryGetValue(ns, out xns);
                                 xel.SetAttributeValue(xns + attrName, attrValue);
                             }
-                            (elem as XComment).Value = String.Format("attribute '{0}' added with value '{1}'", attrName, attrValue);
+                            (node as XComment).Value = String.Format("attribute '{0}' added with value '{1}'", attrName, attrValue);
                         }
 
                         break;
                     case CommentType.ATTR_DEL:
-                        string comment = (elem as XComment).Value;
+                        string comment = (node as XComment).Value;
                         string directive = Directives.ExtractDirectiveAttrDel(comment);
                         string name = DirectiveAttrDel.ExtractAttributeValue(directive);
                         ns = Directives.ExtractNamespace(directive);
 
-                        xn = elem.NextNode;
+                        xn = node.NextNode;
                         while (xn.NodeType != XmlNodeType.Element)
                         {
                             xn = xn.NextNode;
@@ -176,7 +176,7 @@ namespace XamlPreprocessor
                                 Namespaces.TryGetValue(ns, out xns);
                                 xel.SetAttributeValue(xns + name, null);
                             }
-                            (elem as XComment).Value = String.Format("attribute '{0}' removed", name);
+                            (node as XComment).Value = String.Format("attribute '{0}' removed", name);
                         }
 
                         break;
@@ -188,7 +188,7 @@ namespace XamlPreprocessor
         }
 
         /// <summary>
-        /// Ecrit un fichier xaml à l'endroit ciblé en accolant un suffixe au nom de fichier.
+        /// Écrit un fichier xaml à l'endroit ciblé en accolant un suffixe au nom de fichier.
         /// </summary>
         /// <param name="xdoc"></param>
         /// <param name="path"></param>

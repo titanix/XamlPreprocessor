@@ -5,30 +5,30 @@ using System.Text;
 
 namespace XamlPreprocessor.Evaluator
 {
-    class AND : Expression
+    class AndExpression : Expression
     {
-        Expression Expr0;
-        Expression Expr1;
+        Expression LeftExpression;
+        Expression RightExpression;
 
-        public AND(Expression arg0, Expression arg1)
+        public AndExpression(Expression arg0, Expression arg1)
         {
-            Expr0 = arg0;
-            Expr1 = arg1;
+            LeftExpression = arg0;
+            RightExpression = arg1;
         }
 
         public override bool Evaluate(string arg)
         {
-            return Expr0.Evaluate(arg) && Expr1.Evaluate(arg);
+            return LeftExpression.Evaluate(arg) && RightExpression.Evaluate(arg);
         }
 
         public override bool Evaluate(string[] args)
         {
-            return Expr0.Evaluate(args) && Expr1.Evaluate(args);
+            return LeftExpression.Evaluate(args) && RightExpression.Evaluate(args);
         }
 
         public override string ToString()
         {
-            return String.Format("(AND {0} {1})", Expr0.ToString(), Expr1.ToString());
+            return String.Format("(AND {0} {1})", LeftExpression.ToString(), RightExpression.ToString());
         }
     }
 }

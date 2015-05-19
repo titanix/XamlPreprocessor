@@ -53,17 +53,17 @@ namespace XamlPreprocessor.Evaluator
                                 Cursor += NextExpressionLength(ExprString.Substring(Cursor));
                                 Expr1 = Parse(ExprString.Substring(Cursor));
                                 Cursor += NextExpressionLength(ExprString.Substring(Cursor));
-                                return new OR(Expr0, Expr1);
+                                return new OrExpression(Expr0, Expr1);
                             case "and":
                                 Cursor += 4;
                                 Expr0 = Parse(ExprString.Substring(Cursor));
                                 Cursor += NextExpressionLength(ExprString.Substring(Cursor));
                                 Expr1 = Parse(ExprString.Substring(Cursor));
                                 Cursor += NextExpressionLength(ExprString.Substring(Cursor));
-                                return new AND(Expr0, Expr1);
+                                return new AndExpression(Expr0, Expr1);
                             case "not":
                                 Cursor += 4;
-                                return new NOT(Parse(ExprString.Substring(Cursor)));
+                                return new NotExpression(Parse(ExprString.Substring(Cursor)));
                         }
                         break;
                     case ')':
@@ -144,13 +144,13 @@ namespace XamlPreprocessor.Evaluator
                (AND windows (OR c cpp))
             */
             // Test d'évaluation d'expression. Devrait imprimer True, True et False sur la console.
-            Expression exprtest = new OR(new ValueExpression("csharp"), new ValueExpression("nemerle"));
+            Expression exprtest = new OrExpression(new ValueExpression("csharp"), new ValueExpression("nemerle"));
             Console.WriteLine(exprtest.Evaluate("csharp"));
             Console.WriteLine(exprtest.Evaluate("nemerle"));
             Console.WriteLine(exprtest.Evaluate("scheme"));
             Console.WriteLine();
             // Test d'évaluation d'une expression. Devrait imprimer False puis True sur la console.
-            exprtest = new AND(new ValueExpression("windows"), new OR(new ValueExpression("c"), new ValueExpression("cpp")));
+            exprtest = new AndExpression(new ValueExpression("windows"), new OrExpression(new ValueExpression("c"), new ValueExpression("cpp")));
             string[] tab = new string[3];
             tab[0] = "windows";
             Console.WriteLine(exprtest.Evaluate(tab));
@@ -158,7 +158,7 @@ namespace XamlPreprocessor.Evaluator
             Console.WriteLine(exprtest.Evaluate(tab));
             Console.WriteLine();
             // Test d'évaluation d'une expression. Devrait imprimer False sur la console.
-            exprtest = new AND(new ValueExpression("windows"), new AND(new ValueExpression("c"), new NOT(new ValueExpression("cpp"))));
+            exprtest = new AndExpression(new ValueExpression("windows"), new AndExpression(new ValueExpression("c"), new NotExpression(new ValueExpression("cpp"))));
             tab[0] = "windows";
             tab[1] = "c";
             tab[1] = "cpp";
