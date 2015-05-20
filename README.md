@@ -7,13 +7,13 @@ Compatible Visual Studio 2010+ and Xamarin Studio.
 
 ## Why?
 
-* To mutualise more code between Windows Phone, Windows 8 and 10 apps
+* To mutualise UI code between Windows Phone, Windows 8 and 10 apps
 * To make different versions of an application with the ease of conditional compilation directives
 * Incidentally any other light XML transformations
 
 ### Illustration
 
-The emulator (left) features two removed lines in the first section, and color attributes manipulations (injection, 
+The emulator (right) features two removed lines in the first section, and color attributes manipulations (injection, 
 replacement and conditional injection) based on build symbols.
 ![alt text](https://netspring.files.wordpress.com/2013/05/img_prepro.png "Preprocessor usage illustration")
 
