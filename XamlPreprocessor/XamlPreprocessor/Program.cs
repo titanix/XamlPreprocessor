@@ -101,6 +101,7 @@ namespace XamlPreprocessor
                 {
                     case CommentType.IGNORE:
                         break;
+
                     case CommentType.IF:
                         exp = Directives.ExtractExpressionIF((node as XComment).Value);
                         bool eval = exp.Evaluate(Symbols);
@@ -121,14 +122,18 @@ namespace XamlPreprocessor
                         }
                         (node as XComment).Value = String.Format(processMessage, (node as XComment).Value.Trim(), eval2);
                         break;
+
                     case CommentType.ATTR_ADD:
                         string commValue = (node as XComment).Value;
-                        commValue = Directives.ExtractDirectiveAttrAdd(commValue);
-                        string ns = Directives.ExtractNamespace(commValue);
-                        string attrName = DirectiveAttrAdd.ExtractAttributeName(commValue);
-                        string attrValue = DirectiveAttrAdd.ExtractAttributeValue(commValue);
+                        commValue = Directives.ExtractDirectiveAttrAdd (commValue);
+                        string ns = Directives.ExtractNamespace (commValue);
+                        string attrName = DirectiveAttrAdd.ExtractAttributeName (commValue);
+                        string attrValue = DirectiveAttrAdd.ExtractAttributeValue (commValue);
 
                         XNode xn = node.NextNode;
+                        if (xn == null) { // can be null if the node was deleted by a previous LIF directive
+                            continue;
+                        }
                         while (xn.NodeType != XmlNodeType.Element)
                         {
                             xn = xn.NextNode;
@@ -151,6 +156,7 @@ namespace XamlPreprocessor
                         }
 
                         break;
+
                     case CommentType.ATTR_DEL:
                         string comment = (node as XComment).Value;
                         string directive = Directives.ExtractDirectiveAttrDel(comment);
