@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6c0144d9-f098-4905-8926-e78b74587bd4</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>IntegrationDemoApp</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <!-- Preprocessor change here: added the .pre.xaml file to the build. -->
+    <None Include="$(MSBuildThisFileDirectory)SharedPage.pre.xaml" />
+    <!-- Preprocessor change here: added the DependentUpon element. -->
+    <Page Include="$(MSBuildThisFileDirectory)SharedPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <DependentUpon>SharedPage.pre.xaml</DependentUpon>
+    </Page>
+    <!-- Preprocessor change here: changed the DependentUpon to the .pre.xaml file. -->
+    <Compile Include="$(MSBuildThisFileDirectory)SharedPage.xaml.cs">
+      <DependentUpon>SharedPage.pre.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)ReadmeIntegrationHowTo.txt" />
+  </ItemGroup>
+</Project>
