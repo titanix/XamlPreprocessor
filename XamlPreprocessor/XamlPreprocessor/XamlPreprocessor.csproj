@@ -75,7 +75,6 @@
     <Compile Include="Evaluator\OrExpression.cs" />
     <Compile Include="Evaluator\ValueExpression.cs" />
     <Compile Include="Evaluator\MalFormedExpressionException.cs" />
-    <Compile Include="PathRename.cs" />
     <Compile Include="Directives\PreprocessDirectives.cs" />
     <Compile Include="PreprocessorTask.cs" />
     <Compile Include="Program.cs" />

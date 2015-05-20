@@ -24,27 +24,4 @@ namespace XamlPreprocessor
             return prepro.Run(File, OutName);
         }
     }
-
-    public class PreprocessorTask_2 : Task
-    {
-        [Required]
-        public string[] Symbols { get; set; }
-
-        [Required]
-        public string[] Files { get; set; }
-
-        [Required]
-        public string OutDir { get; set; }
-
-        public override bool Execute()
-        {
-            Preprocessor prepro = new Preprocessor();
-            bool res = true;
-            foreach (string item in Files)
-            {
-                res &= prepro.Run(item, OutDir);
-            }
-            return res;
-        }
-    }
 }

@@ -198,7 +198,11 @@ namespace XamlPreprocessor
             {
                 using (StreamWriter output = new StreamWriter(path))
                 {
-                    using (XmlWriter xout = XmlWriter.Create(output))
+                    XmlWriterSettings settings = new XmlWriterSettings();
+                    settings.Indent = true;
+                    settings.IndentChars = " ";
+                    settings.OmitXmlDeclaration = true;
+                    using (XmlWriter xout = XmlWriter.Create(output, settings))
                     {
                         xdoc.WriteTo(xout);
                     }
