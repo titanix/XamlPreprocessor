@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<!-- ~IF[DEBUG] -->
+<!-- ATTR-ADD[android:text="debug mode"] -->
+<!-- ~IF[RELEASE] -->
+<!-- ATTR-ADD[android:text="release mode"] -->
+<Button  
+    android:id="@+id/myButton"
+    android:layout_width="match_parent" 
+    android:layout_height="wrap_content" 
+    />
+</LinearLayout>
+
