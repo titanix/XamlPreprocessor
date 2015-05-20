@@ -20,7 +20,15 @@ namespace XamlPreprocessor
         /// </summary>
         public string[] Symbols;
 
+        private bool runAsTask = false;
+
         Dictionary<string, XNamespace> Namespaces = new Dictionary<string, XNamespace>();
+
+        public Preprocessor() { }
+
+        public Preprocessor(bool runAsTask) {
+            this.runAsTask = runAsTask;
+        }
 
         static void Main(string[] args)
         {
@@ -63,6 +71,10 @@ namespace XamlPreprocessor
             }
             catch (Exception)
             {
+                if (runAsTask)
+                {
+                    throw;
+                }
                 return false;
             }
         }
@@ -217,6 +229,10 @@ namespace XamlPreprocessor
             catch (Exception ex)
             {
                 Console.Error.WriteLine("Shit happened : {0}", ex.Message);
+                if (runAsTask)
+                {
+                    throw;
+                }
             }
         }
 

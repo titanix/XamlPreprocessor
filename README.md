@@ -2,12 +2,12 @@
 
 ## What?
 
-A command line utility + MSBuild Task to enable conditional compilation like directives in XAML file.
+A command line utility + MSBuild Task to enable conditional compilation like directives in XAML files.
 
 ## Why?
 
 * To mutualise more code between Windows Phone, Windows 8 and 10 apps
-* To make different versions of an app with the ease of conditional compilation directive
+* To make different versions of an application with the ease of conditional compilation directives
 * Incidentally any other light XML transformations
 
 ## How?
@@ -27,7 +27,7 @@ Boolean expression let you specify complex condition.
 
 ## IRL
 
-Used since May 2013 to build different version of my Windows Phone [Japanese-French Dictionary](http://windowsphone.com/s?appId=d9951d66-368e-414c-89db-f76db5697f7b).
+Used since May 2013 to build multiple versions of my Windows Phone [Japanese-French Dictionary](http://windowsphone.com/s?appId=d9951d66-368e-414c-89db-f76db5697f7b).
 
 ## Usage
 

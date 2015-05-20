@@ -19,9 +19,19 @@ namespace XamlPreprocessor
 
         public override bool Execute()
         {
-            Preprocessor prepro = new Preprocessor();
+            Preprocessor prepro = new Preprocessor(runAsTask: true);
             prepro.Symbols = this.Symbols.Split(';');
-            return prepro.Run(File, OutName);
+            try {
+                if (!prepro.Run(File, OutName))
+                {
+                    base.Log.LogError(String.Format("Error while processing file {0}", File));
+                    return false;
+                }
+                return true;
+            } catch(Exception e) {
+                base.Log.LogError(String.Format("Error while processing file {0}; reason: {1}", File, e.Message));
+                return false;
+            }
         }
     }
 }
