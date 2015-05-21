@@ -50,7 +50,7 @@ namespace XamlPreprocessor
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("Shit happened with file {0} because {1}", args[1], ex.Message);
+                Console.Error.WriteLine("Problem happened with file {0} because {1}", args[1], ex.Message);
                 Environment.Exit(1);
             }
         }
@@ -231,7 +231,7 @@ namespace XamlPreprocessor
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("Shit happened : {0}", ex.Message);
+                Console.Error.WriteLine("Problem happened : {0}", ex.Message);
                 if (runAsTask)
                 {
                     throw;
