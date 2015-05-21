@@ -120,7 +120,11 @@ namespace XamlPreprocessor
                         if (!eval)
                         {
                             // Note : il semblerait qu'AfterSelf() ignore de toute façon les noeuds commentaires  
-                            node.ElementsAfterSelf().Where(e => e.NodeType != XmlNodeType.Comment).First().Remove();
+                            var nodeToDelete = node.ElementsAfterSelf()
+                                .Where(e => e.NodeType != XmlNodeType.Comment)
+                                .First();
+                            nodeToDelete.AddAfterSelf(new XComment("Deleted node was here."));
+                            nodeToDelete.Remove();
                         }
                         (node as XComment).Value = String.Format(processMessage, (node as XComment).Value.Trim(), eval);
                         break;
@@ -143,13 +147,12 @@ namespace XamlPreprocessor
                         string attrValue = DirectiveAttrAdd.ExtractAttributeValue (commValue);
 
                         XNode xn = node.NextNode;
-                        if (xn == null) { // can be null if the node was deleted by a previous LIF directive
-                            continue;
-                        }
-                        while (xn.NodeType != XmlNodeType.Element)
+
+                        while (xn != null && xn.NodeType != XmlNodeType.Element)
                         {
                             xn = xn.NextNode;
                         }
+
                         XElement xel = xn as XElement;
 
                         if (xel != null)
