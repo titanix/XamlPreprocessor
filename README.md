@@ -24,7 +24,7 @@ replacement and conditional injection) based on build symbols.
 Using a special syntax for comment you can conditionally remove node, add or remove attribute, or remove directives.
 Boolean expression let you specify complex condition.
 
-[Detailed syntax explanation]().
+[Detailed syntax explanation](http://unixorn.azurewebsites.net/misc/syntax-en.html).
 
 ### French
 
