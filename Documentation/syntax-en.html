@@ -1,0 +1,196 @@
+<html>
+<head>
+<style type="text/css">
+body { width:840px; margin:0 auto; }
+.code_sample {
+background: #ffffff; 
+overflow:auto;
+width:auto;
+border:solid #009900;
+border-width:.1em .1em .1em .6em;
+padding:.2em .6em;
+}
+</style></head>
+<body>
+<h1>XAML Preprocessor &mdash; Syntax</h1>
+<p>
+XAML is a great language for interface description but it have a caveat: it doesn't support C# like conditional
+compilation directives. Thus it is tricky to create and maintain multiple versions of an app where there are 
+only small changes that would better lies in XAML files.
+</p>
+
+<p>
+That's why I create a small program that take an XML file in input and output another one. 
+In between it applies some transformations.
+</p>
+
+<p>
+I choose to implements the directives as XML comments. That way it is neutral for other tools such as the 
+XAML designer.
+</p>
+
+<h2>The IF directive</h2>
+<p>
+The semantic of this directive is: "if its expression is evaluated to true, the directive itself is 
+transformed and no other change are made. Otherwise the directive is transformed and the next sibling non 
+comment XML node is deleted."
+</p>
+
+<p>This semantic means you can put comments between the node to be conditionally deleted and a directive.</p>
+
+<p>
+Actually each directive is always transformed in non-directive comments by the preprocessor. 
+That way to application of the preprocessor to a file is idempotent.
+<p>
+
+<h3>Sample</h3>
+
+<p>
+We will apply the preprocessor to the following file in two ways: either while defining the DEBUG symbols
+or not. The symbols handling is case sensitive.
+</p>
+
+<p>This is the reference file:</p>
+<!-- HTML generated using hilite.me --><div class="code_sample"><pre style="margin: 0; line-height: 125%"><span style="color: #1e90ff; font-weight: bold">&lt;root&gt;</span>
+	<span style="color: #1e90ff; font-weight: bold">&lt;node1&gt;</span>hello<span style="color: #1e90ff; font-weight: bold">&lt;/node1&gt;</span>
+	<span style="color: #aaaaaa; font-style: italic">&lt;!-- IF[DEBUG] --&gt;</span>
+	<span style="color: #aaaaaa; font-style: italic">&lt;!-- This node will be removed in release mode. --&gt;</span>
+	<span style="color: #1e90ff; font-weight: bold">&lt;node2&gt;</span>debug only<span style="color: #1e90ff; font-weight: bold">&lt;/node2&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;/root&gt;</span>
+</pre></div>
+
+<p>After using this command line:</p>
+<pre>XamlPreprocessor.exe DEBUG if.xml if.out.xml</pre>
+<p>The file is transformed this way:</p>
+
+<div class="code_sample"><pre style="margin: 0; line-height: 125%"><span style="color: #1e90ff; font-weight: bold">&lt;root&gt;</span>
+ <span style="color: #1e90ff; font-weight: bold">&lt;node1&gt;</span>hello<span style="color: #1e90ff; font-weight: bold">&lt;/node1&gt;</span>
+ <span style="color: #aaaaaa; font-style: italic">&lt;!--expression &#39;IF[DEBUG]&#39; evaluated at &#39;True&#39;--&gt;</span>
+ <span style="color: #aaaaaa; font-style: italic">&lt;!-- This node will be removed in release mode. --&gt;</span>
+ <span style="color: #1e90ff; font-weight: bold">&lt;node2&gt;</span>debug only<span style="color: #1e90ff; font-weight: bold">&lt;/node2&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;/root&gt;</span>
+</pre></div>
+
+
+<p>Because the expression was evaluated to true, node2 was kept in place. Also the conditional directive
+now shows a trace information.</p>
+
+<p>
+Let's run the preprocessor again against the reference file but without the DEBUG symbol. The preprocessor expect at least one symbol so we pass it a dummy
+symbol.
+</p>
+
+<pre>XamlPreprocessor.exe DUMMY if.xml if.out.xml</pre>
+
+<div class="code_sample"><pre style="margin: 0; line-height: 125%"><span style="color: #1e90ff; font-weight: bold">&lt;root&gt;</span>
+ <span style="color: #1e90ff; font-weight: bold">&lt;node1&gt;</span>hello<span style="color: #1e90ff; font-weight: bold">&lt;/node1&gt;</span>
+ <span style="color: #aaaaaa; font-style: italic">&lt;!--expression &#39;IF[DEBUG]&#39; evaluated at &#39;False&#39;--&gt;</span>
+ <span style="color: #aaaaaa; font-style: italic">&lt;!-- This node will be removed in release mode. --&gt;</span>
+ <span style="color: #aaaaaa; font-style: italic">&lt;!--Deleted node was here.--&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;/root&gt;</span>
+</pre></div>
+
+
+<h2>Attribute related directives</h2>
+
+<p>While deleting a node is great it isn't always applicable in the XAML designer: for example if you have
+two nodes with the same <em>x:Key</em> attribute, the designer will complains. This is why it is possible to
+add a (namespaced) attribute with a special directive.</p>
+
+<p>Note: the attribute is added or removed unconditionally. You must use it with another directive (~IF) to conditionally
+add or remove an attribute.</p>
+
+<h3>ATTR-ADD</h3>
+
+<div class="code_sample"><pre style="margin: 0; line-height: 125%"><span style="color: #1e90ff; font-weight: bold">&lt;root&gt;</span>
+<span style="color: #aaaaaa; font-style: italic">&lt;!-- IF[WP7] --&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;item</span> <span style="color: #1e90ff">x:Key=</span><span style="color: #aa5500">&quot;MyKey&quot;</span> <span style="color: #1e90ff">Text=</span><span style="color: #aa5500">&quot;v7&quot;</span> <span style="color: #1e90ff; font-weight: bold">/&gt;</span>
+<span style="color: #aaaaaa; font-style: italic">&lt;!-- IF[WP8] --&gt;</span>
+<span style="color: #aaaaaa; font-style: italic">&lt;!-- ATTR-ADD[x:Key=&quot;MyKey&quot;] --&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;item</span> <span style="color: #1e90ff">Text=</span><span style="color: #aa5500">&quot;v8&quot;</span> <span style="color: #1e90ff; font-weight: bold">/&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;/root&gt;</span>
+</pre></div>
+
+<pre>XamlPreprocessor WP8 add.xml add.out.xml</pre>
+
+<div class="code_sample"><pre style="margin: 0; line-height: 125%"><span style="color: #1e90ff; font-weight: bold">&lt;root&gt;</span>
+ <span style="color: #aaaaaa; font-style: italic">&lt;!--expression &#39;IF[WP7]&#39; evaluated at &#39;False&#39;--&gt;</span>
+ <span style="color: #aaaaaa; font-style: italic">&lt;!--expression &#39;IF[WP8]&#39; evaluated at &#39;True&#39;--&gt;</span>
+ <span style="color: #aaaaaa; font-style: italic">&lt;!--attribute &#39;Key&#39; added with value &#39;MyKey&#39;--&gt;</span>
+ <span style="color: #1e90ff; font-weight: bold">&lt;item</span> <span style="color: #1e90ff">Text=</span><span style="color: #aa5500">&quot;v8&quot;</span> <span style="color: #1e90ff">Key=</span><span style="color: #aa5500">&quot;MyKey&quot;</span> <span style="color: #1e90ff; font-weight: bold">/&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;/root&gt;</span>
+</pre></div>
+
+<p>Note : this sample seems to not works on Mono. It runs fine on MS .net.</p>
+
+<h3>ATTR-DEL</h3>
+
+<p>You can also delete an attribute.</p>
+
+<h2 id="lif">The LIF directive</h2>
+
+<p>
+The ~IF directive works almost like the IF directive, hence its name. The difference lies in which node it will delete.
+While the IF directive delete the next non comment XML node, <strong>~IF delete the next XML node</strong> even if it is a comment.
+</p>
+
+<p>Because the preprocessor sequentially evaluates and runs directives from the beginning of the file to the bottom,
+it means you can deleted preprocessor directives before they are evaluated.</p>
+
+<p>This is the canonical way to implement conditional attribute directive.</p>
+
+<div class="code_sample"><pre style="margin: 0; line-height: 125%"><span style="color: #1e90ff; font-weight: bold">&lt;root&gt;</span>
+  <span style="color: #aaaaaa; font-style: italic">&lt;!-- Conditionally colors the text in debug. --&gt;</span>
+  <span style="color: #aaaaaa; font-style: italic">&lt;!-- ~IF[DEBUG] --&gt;</span>
+  <span style="color: #aaaaaa; font-style: italic">&lt;!-- ATTR-ADD[Foreground=&quot;Yellow&quot;] --&gt;</span>
+  <span style="color: #1e90ff; font-weight: bold">&lt;TextBlock</span> <span style="color: #1e90ff">Text=</span><span style="color: #aa5500">&quot;Debug mode&quot;</span><span style="color: #1e90ff; font-weight: bold">/&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;/root&gt;</span>
+</pre></div>
+
+<p>Of course you can use this pattern more than once at a time.</p>
+
+<div class="code_sample"><pre style="margin: 0; line-height: 125%"><span style="color: #1e90ff; font-weight: bold">&lt;root&gt;</span>
+  <span style="color: #aaaaaa; font-style: italic">&lt;!-- Set the text color to yellow in debug and to red in release. --&gt;</span>
+  <span style="color: #aaaaaa; font-style: italic">&lt;!-- ~IF[DEBUG] --&gt;</span>
+  <span style="color: #aaaaaa; font-style: italic">&lt;!-- ATTR-ADD[Foreground=&quot;Yellow&quot;] --&gt;</span>
+  <span style="color: #aaaaaa; font-style: italic">&lt;!-- ~IF[(not DEBUG)] --&gt;</span>
+  <span style="color: #aaaaaa; font-style: italic">&lt;!-- ATTR-ADD[Foreground=&quot;Red&quot;] --&gt;</span>
+  <span style="color: #1e90ff; font-weight: bold">&lt;TextBlock</span> <span style="color: #1e90ff">Text=</span><span style="color: #aa5500">&quot;Debug mode&quot;</span><span style="color: #1e90ff; font-weight: bold">/&gt;</span>
+<span style="color: #1e90ff; font-weight: bold">&lt;/root&gt;</span>
+</pre></div>
+
+<p>This last sample use a more complex expression to express the condition. Let's dive into that.</p>
+
+<h2>Boolean expression</h2>
+
+<p>The processor evaluates expression. The more basic expression is just a symbol name. If the symbol is defined 
+(that is given to the preprocessor as it first argument) it will be evaluated to true while processing the file, and
+false otherwise.</p>
+
+<p>More complex expressions can be expressed using a LISP-like syntax. Three booleans operators are supported: <em>and</em>, 
+<em>or</em> and <em>not</em>.</p>
+
+<pre>(or DEBUG WIN_8)</pre>
+<pre>(not DEBUG)</pre>
+
+<p>Note: in the case of the <em>not</em> operator, <strong>parenthesis are mandatory</strong>.</p>
+
+<p>Arbitrary complex expression can we used.</p>
+
+<pre>(and (not WIN_RT) (or PHONE HOLOLENS))</pre>
+
+<p>More formally, expressions must follows this pseudo-BNF grammar:</p>
+
+<pre>EXPRESSION :=  SYMBOL
+| (OPERATOR EXPRESSION EXPRESSION)
+| (not EXPRESSION)
+
+OPERATOR := or | and
+
+SYMBOL := <em>character string</em></pre>
+
+<h2>That's all</h2>
+
+<p>Have fun building app more efficiently with this preprocessor. Let me know if you use it to build your product ;)</p>
+</body>
+</html>
